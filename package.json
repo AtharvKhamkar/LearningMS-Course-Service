@@ -1,0 +1,34 @@
+{
+  "name": "CourseServicee",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "dev": "serverless offline --stage dev",
+    "stg": "serverless offline --stage stg",
+    "deploy": "serverless deploy --stage prod --region ap-southeast-1",
+    "remove": "serverless remove --stage prod --region ap-southeast-1"
+  },
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "cli-table": "^0.3.11",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "express-list-endpoints": "^7.1.1",
+    "multer": "^1.4.5-lts.2",
+    "pg": "^8.16.0",
+    "pino": "^9.6.0",
+    "serverless-http": "^3.2.0"
+  },
+  "overrides": {
+    "serverless-dotenv-plugin": {
+      "serverless": "$serverless"
+    }
+  },
+  "devDependencies": {
+    "pino-pretty": "^13.0.0",
+    "serverless": "^4.14.3",
+    "serverless-dotenv-plugin": "^6.0.0",
+    "serverless-offline": "^14.4.0"
+  }
+}

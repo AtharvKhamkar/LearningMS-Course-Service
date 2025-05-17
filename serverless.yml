@@ -1,0 +1,26 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: personalserverlessproject
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: courseservice
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: CourseServicee
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  environment:
+    DATABASE_URL: ${env:DATABASE_URL, "fallback value"}
+
+functions:
+  api:
+    handler: src/index.handler
+    events:
+      - httpApi: "*"
+
+custom:
+  dotenv:
+    exclude: []
+
+plugins:
+  - serverless-offline
+  - serverless-dotenv-plugin

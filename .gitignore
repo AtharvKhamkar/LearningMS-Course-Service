@@ -1,0 +1,6 @@
+node_modules
+.serverless
+references
+.env
+.env.dev
+.env.stg
