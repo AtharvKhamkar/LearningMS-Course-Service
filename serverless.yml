@@ -20,6 +20,9 @@ functions:
 custom:
   dotenv:
     exclude: []
+  serverless-offline:
+    httpPort: 3003
+    lambdaPort: 3004
 
 plugins:
   - serverless-offline
