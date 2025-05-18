@@ -23,7 +23,7 @@ class Controller {
         user_id: req.user.user_id,
       });
       const result = dbResponse[0]?.data?.[0];
-      
+
       if (!result) {
         return sendResponse(
           req,
@@ -39,6 +39,127 @@ class Controller {
       }
 
       return sendResponse(req, res, statusCodes.OK_200, result, null);
+    } catch (error) {
+      logger.error(
+        `${controllerName}| ${functionName}ERROR, errorMessage - ${error.message}`
+      );
+      next(error);
+    }
+  }
+
+  async publishCourse(req, res, next) {
+    const functionName = `${controllerName} | PUBLISH_COURSE - `;
+
+    try {
+      const { id } = req.params;
+      const dbResponse = await courseService.publishCourse({ ...req.user, id });
+      const result = dbResponse[0]?.course_id;
+
+      if (!result) {
+        return sendResponse(
+          req,
+          res,
+          statusCodes.INTERNAL_SERVER_ERROR_500,
+          null,
+          errorMessages.INTERNAL_SERVER_ERROR
+        );
+      }
+
+      return sendResponse(
+        req,
+        res,
+        statusCodes.OK_200,
+        "Course published successfully",
+        null
+      );
+    } catch (error) {
+      logger.error(
+        `${controllerName}| ${functionName}ERROR, errorMessage - ${error.message}`
+      );
+      next(error);
+    }
+  }
+
+  async getCourseDetail(req, res, next) {
+    const functionName = `${controllerName} | GET_SINGLE_COURSE - `;
+
+    try {
+      const { id } = req.params;
+      const dbResponse = await courseService.getCourseDetail(id);
+      const result = dbResponse[0];
+
+      if (!result) {
+        return sendResponse(
+          req,
+          res,
+          statusCodes.INTERNAL_SERVER_ERROR_500,
+          null,
+          errorMessages.INTERNAL_SERVER_ERROR
+        );
+      }
+
+      return sendResponse(req, res, statusCodes.OK_200, result, null);
+    } catch (error) {
+      logger.error(
+        `${controllerName}| ${functionName}ERROR, errorMessage - ${error.message}`
+      );
+      next(error);
+    }
+  }
+
+  async updateCourse(req, res, next){
+    const functionName = `${controllerName} | UPDATE_COURSE`;
+
+    try {
+      const {id} = req.params;
+      const dbResponse = await courseService.updateCourse({...req.body, id, ...req.user});
+      const result = dbResponse[0]?.data?.[0];
+
+      if(!result){
+        return sendResponse(
+          req,
+          res,
+          statusCodes.INTERNAL_SERVER_ERROR_500,
+          null,
+          errorMessages.INTERNAL_SERVER_ERROR
+        );
+      }
+      
+      return sendResponse(req, res, statusCodes.OK_200, result, null);
+    } catch (error) {
+      logger.error(
+        `${controllerName}| ${functionName}ERROR, errorMessage - ${error.message}`
+      );
+      next(error);
+    }
+  }
+  
+
+  async removeCourse(req, res, next) {
+    const functionName = `${controllerName} | REMOVE_COURSE - `;
+
+    try {
+      const { id } = req.params;
+      const dbResponse = await courseService.removeCourse({ id, ...req.user });
+      const result = dbResponse[0];
+
+      if (!result) {
+        return sendResponse(
+          req,
+          res,
+          statusCodes.INTERNAL_SERVER_ERROR_500,
+          null,
+          errorMessages.INTERNAL_SERVER_ERROR
+        );
+      }
+
+      return sendResponse(
+        req,
+        res,
+        statusCodes.OK_200,
+        "Course removed successfully",
+        null
+      );
     } catch (error) {
       logger.error(
         `${controllerName}| ${functionName}ERROR, errorMessage - ${error.message}`
