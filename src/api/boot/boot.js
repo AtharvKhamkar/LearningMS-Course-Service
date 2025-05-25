@@ -6,6 +6,7 @@ import cors from 'cors';
 import sendResponse from "../middlewares/response.handler.js";
 import { errorMessages, statusCodes } from "../middlewares/constant.handler.js";
 import courseRouter from "../controllers/courses/index.js";
+import enrollmentRouter from "../controllers/enrollments/index.js";
 import printRouteListTable from "./routeTable.js";
 import Connections from "../middlewares/connection.handler.js";
 import postgresDbHandler from "../middlewares/postgres.db.handler.js";
@@ -114,6 +115,7 @@ const registerRoutes = function(){
 
         // app.use('/v1',apiRouter);
         app.use('/v1/course',courseRouter);
+        app.use('/v1/enrollment',enrollmentRouter);
 
 
         bootLogger.info('Registered the following routes');
