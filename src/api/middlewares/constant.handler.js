@@ -134,3 +134,9 @@ export const errorMessages = {
 		message : 'Username is already used'
 	},
 };
+
+export const Roles = {
+	ADMIN : 'ADMIN',
+	INSTRUCTOR : 'INSTRUCTOR',
+	STUDENT : 'STUDENT'
+}

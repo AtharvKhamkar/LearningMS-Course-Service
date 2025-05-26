@@ -28,6 +28,7 @@ class TokenService {
         );
         if (decoded) {
           req.user = decoded;
+          console.log(req.user); 
           next();
         } else {
           logger.info(

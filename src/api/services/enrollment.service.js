@@ -26,6 +26,27 @@ class EnrollmentService{
             utility.logQueryTime(serviceName, functionName, null, startTime);
         }
     }
+
+    async cancelEnrollment(postData){
+        const functionName = 'CANCEL_ENROLLMENT';
+        const startTime = new Date();
+        try {
+            let pgQuery = {
+                text: "DELETE FROM tbl_enrollments WHERE course_id = $1 AND student_id = $2 RETURNING enrollment_id",
+                values: [
+                    postData.course_id,
+                    postData.student_id,
+                ]
+            }
+
+            const dbResponse = await postgresDbHandler.executeQuery(pgQuery);
+            return dbResponse;
+        } catch (error) {
+            logger.info(`${serviceName}|${functionName} - ERROR, errorMessage - ${error.message}`);
+        }finally{
+            utility.logQueryTime(serviceName, functionName, null, startTime);
+        }
+    }
 }
 
 
