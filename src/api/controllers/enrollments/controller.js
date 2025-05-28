@@ -29,7 +29,6 @@ class Controller {
 
       const result = dbResponse[0]?.data?.[0];
 
-
       if (!result.enrollment_id) {
         return sendResponse(req, res, statusCodes.OK_200, null, result.message);
       }
@@ -43,8 +42,12 @@ class Controller {
       );
 
       //Formatting to readable dates
-      result.start_date = moment(result.start_date).format('MMMM Do YYYY, h:mm:ss a');
-      result.end_date = moment(result.end_date).format('MMMM Do YYYY, h:mm:ss a');
+      result.start_date = moment(result.start_date).format(
+        "MMMM Do YYYY, h:mm:ss a"
+      );
+      result.end_date = moment(result.end_date).format(
+        "MMMM Do YYYY, h:mm:ss a"
+      );
 
       return sendResponse(req, res, statusCodes.OK_200, result, null);
     } catch (error) {
@@ -54,7 +57,7 @@ class Controller {
     }
   }
 
-  async cancelEnrollment(req, res, next){
+  async cancelEnrollment(req, res, next) {
     const functionName = `${controllerName} | CANCEL_ENROLLMENT -`;
     try {
       //Get course_id from the req.params
@@ -63,22 +66,69 @@ class Controller {
       //delete enrollment entry from the tbl_enrollments table
       //Send enrollment cancelled successfully email
 
-      const {course_id} = req.body;
+      const { course_id } = req.body;
 
       const dbResponse = await enrollmentService.cancelEnrollment({
         course_id,
-        student_id: req.user.user_id
-      })
+        student_id: req.user.user_id,
+      });
       const result = dbResponse[0];
 
-      if(!result){
-        return sendResponse(req,res,statusCodes.NOT_FOUND_404, null, 'Enrollment not found');
+      if (!result) {
+        return sendResponse(
+          req,
+          res,
+          statusCodes.NOT_FOUND_404,
+          null,
+          "Enrollment not found"
+        );
       }
 
-      await mailService.sendCancelEnrollmentMail(req.user.full_name, 'Sample course name', req.user.email_id);
+      await mailService.sendCancelEnrollmentMail(
+        req.user.full_name,
+        "Sample course name",
+        req.user.email_id
+      );
       return sendResponse(req, res, statusCodes.OK_200, result, null);
+    } catch (error) {
+      logger.error(
+        `${controllerName}| ${functionName}ERROR, errorMessage - ${error.message}`
+      );
+    }
+  }
 
-      
+  async getAllEnrolledStudentDetail(req, res, next) {
+    const functionName = `${controllerName} | GET_ALL_ENROLLED_STUDENT_DETAIL -`;
+    try {
+      //Get course_id from the req.params
+      //Get user id from req.user
+      //Check user role is instructor or not that will be handled by middleware
+      //User can only check enrolled student if the instructor of the course is itself and passed coursed id using req.params
+      //If it is true then only show enrolled student details
+
+      const { id : course_id } = req.params;
+      const { user_id } = req.user;
+
+      const dbResponse = await enrollmentService.getAllEnrolledStudentDetail({
+        user_id,
+        course_id,
+      });
+      const result = dbResponse[0]?.data?.[0];
+
+      if (result != null && result.valid_user) {
+        return sendResponse(
+          req,
+          res,
+          statusCodes.UNAUTHORIZED_401,
+          null,
+          result.message
+        );
+      }
+
+      result.start_date = moment(result.start_date).format('MMMM Do YYYY, h:mm:ss a');
+      result.end_date = moment(result.end_date).format('MMMM Do YYYY, h:mm:ss a');
+
+      return sendResponse(req, res, statusCodes.OK_200, result, null);
     } catch (error) {
       logger.error(
         `${controllerName}| ${functionName}ERROR, errorMessage - ${error.message}`

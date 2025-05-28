@@ -17,6 +17,14 @@ router
   );
 
 router
+  .route("/:id")
+  .get(
+    tokenService.verifyUserAccessToken,
+    checkRole(Roles.INSTRUCTOR),
+    controller.getAllEnrolledStudentDetail
+  );
+
+router
   .route("/")
   .delete(
     upload.none(),

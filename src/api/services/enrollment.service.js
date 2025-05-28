@@ -47,6 +47,27 @@ class EnrollmentService{
             utility.logQueryTime(serviceName, functionName, null, startTime);
         }
     }
+
+    async getAllEnrolledStudentDetail(postData){
+        const functionName = 'GET_ALL_ENROLLED_STUDENT_DETAILS';
+        const startTime = new Date();
+        try {
+            let pgQuery = {
+                text: 'SELECT * FROM fn_get_enrolled_student_details($1, $2)',
+                values:[
+                    postData.user_id,
+                    postData.course_id
+                ]
+            }
+
+            const dbResponse = await postgresDbHandler.executeQuery(pgQuery);
+            return dbResponse;
+        } catch (error) {
+            logger.info(`${serviceName}|${functionName} - ERROR, errorMessage - ${error.message}`);
+        }finally{
+            utility.logQueryTime(serviceName, functionName, null, startTime);
+        }
+    }
 }
 
 
